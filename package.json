@@ -7,9 +7,13 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "axios": "^1.5.1",
     "core-js": "^3.8.3",
+    "openapi": "^1.0.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
+    "vue-star-rating": "^2.1.0",
+    "vue3-star-ratings": "^3.0.4",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
