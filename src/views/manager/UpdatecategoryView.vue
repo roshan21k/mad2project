@@ -56,10 +56,13 @@ export default {
   },
   methods: {
     showAdd() {
-      (this.isUpdateSelected = true), (this.isShowSelected = false);
+      (this.isUpdateSelected = true),
+        (this.isShowSelected = false),
+        this.getRequests();
     },
     showPrevious() {
       (this.isUpdateSelected = false), (this.isShowSelected = true);
+      this.getRequests();
     },
     async handleSubmit() {
       try {

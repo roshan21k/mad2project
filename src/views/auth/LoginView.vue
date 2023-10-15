@@ -71,7 +71,6 @@ export default {
             username: this.username,
             password: this.password,
           });
-          console.log(response.data.tokens.access);
           localStorage.setItem("accessToken", response.data.tokens.access);
           localStorage.setItem("refreshToken", response.data.tokens.refresh);
           localStorage.setItem("userRole", response.data.role);

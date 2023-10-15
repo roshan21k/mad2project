@@ -18,8 +18,13 @@
     :round-start-rating="true"
     :show-rating="true"
   />
+  <p>Stock Left : {{ productItem.stock }} {{ productItem.uom }}</p>
   <div class="button">
-    <button :disabled="addingToCart" @click="addToCart(productItem.id)">
+    <button
+      :disabled="addingToCart || soldOut"
+      @click="addToCart(productItem.id)"
+      :class="{ 'sold-out': this.soldOut }"
+    >
       {{ cartText }}
     </button>
   </div>
@@ -32,9 +37,9 @@ export default {
   components: { StarRating },
   data() {
     return {
-      cartText: "Add to cart",
       addingToCart: false,
       ratings: this.productItem.ratings_average,
+      soldOut: this.productItem.stock === 0,
     };
   },
   props: {
@@ -44,8 +49,6 @@ export default {
     async addToCart(id) {
       try {
         const response = await axios.post(`user/cart/${id}`);
-        console.log(response.data.message);
-        this.cartText = "Added ✅";
         this.addingToCart = true;
 
         this.setClearMessageTimeout();
@@ -59,9 +62,19 @@ export default {
     },
     setClearMessageTimeout() {
       setTimeout(() => {
-        this.cartText = "Add To Cart";
         this.addingToCart = false;
       }, 3000);
+    },
+  },
+  computed: {
+    cartText() {
+      if (this.soldOut) {
+        return "SoldOut!";
+      } else if (this.addingToCart) {
+        return "Added ✅";
+      } else {
+        return "Add To Cart";
+      }
     },
   },
 };
@@ -94,5 +107,8 @@ button[disabled] {
   text-decoration: none;
   color: black;
   padding: 0;
+}
+.sold-out {
+  background-color: rgb(255, 75, 75);
 }
 </style>

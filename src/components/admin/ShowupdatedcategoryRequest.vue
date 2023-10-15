@@ -4,7 +4,13 @@
   </h1>
   <h1 v-else>No requests Found</h1>
   <div class="container" v-if="updatedRequestDetails.length > 0">
-    <div>
+    <div style="overflow-x: auto">
+      <select v-model="rowPerPage" @change="changeRows">
+        <option :value="5">5 per table</option>
+        <option :value="10">10 per table</option>
+        <option :value="10">15 per table</option>
+        <option :value="10">20 per table</option>
+      </select>
       <table>
         <thead>
           <th>ID</th>
@@ -42,11 +48,15 @@ export default {
   props: ["updatedRequestDetails"],
   data() {
     return {
-      perPage: 5, // Number of items to show per page
-      currentPage: 1, // Current page
+      perPage: 5,
+      currentPage: 1,
+      rowPerPage: 5,
     };
   },
   methods: {
+    changeRows() {
+      this.perPage = this.rowPerPage;
+    },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;

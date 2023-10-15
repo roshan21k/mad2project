@@ -13,7 +13,7 @@
         </h2>
       </div>
     </router-link>
-    <router-link class="router" :to="{ name: 'categoryRequests' }">
+    <router-link class="router" :to="{ name: 'productRequests' }">
       <div class="request">
         <h2 class="">
           Manager Requests: <span class="sub-title"> Product</span>

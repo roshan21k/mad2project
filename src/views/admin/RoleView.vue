@@ -1,7 +1,7 @@
 <template>
   <h1 v-if="roles.length > 0">Pending Role Requests</h1>
   <div class="container" v-if="roles.length > 0">
-    <div>
+    <div style="overflow-x: auto">
       <table>
         <thead>
           <th>ID</th>

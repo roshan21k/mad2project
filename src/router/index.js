@@ -18,6 +18,7 @@ import DeleteproductView from "../views/manager/DeleteproductView.vue";
 import AddcategoryView from "../views/manager/AddcategoryView.vue";
 import UpdatecategoryView from "../views/manager/UpdatecategoryView.vue";
 import DeletecategoryView from "../views/manager/DeletecategoryView.vue";
+import ProductrequestView from "../views/admin/ProductrequestView.vue";
 import store from "@/store";
 const routes = [
   {
@@ -119,6 +120,12 @@ const routes = [
     meta: { requiresAuth: true, role: ["admin"] },
   },
   {
+    path: "/admin/product_requests",
+    name: "productRequests",
+    component: ProductrequestView,
+    meta: { requiresAuth: true, role: ["admin"] },
+  },
+  {
     path: "/unauthorised",
     name: "unauthorised",
     component: UnauthorisedView,
@@ -186,27 +193,5 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
-
-  // if (requiresAuth && !store.state.isAuthenticated) {
-  //   next("/login");
-  // } else if (
-  //   requiresAdmin &&
-  //   (store.state.userRole === "user" || store.state.userRole === "manager")
-  // ) {
-  //   next("/");
-  // } else if (requiresManager && store.state.userRole === "admin") {
-  //   next("/admin");
-  // } else if (requiresManager && store.state.userRole === "user") {
-  //   next("/");
-  // } else if (
-  //   !requiresAuth &&
-  //   (store.state.userRole === "user" || store.state.userRole === "manager")
-  // ) {
-  //   next("/");
-  // } else if (!requiresAuth && store.state.userRole == "admin") {
-  //   next("/admin");
-  // } else {
-  //   next(); // Continue with navigation
-  // }
 });
 export default router;

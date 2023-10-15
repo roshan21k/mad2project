@@ -134,6 +134,18 @@ def cart_remove(id):
 def place_order():
     try:
         cart_items = Cart.query.filter_by(user_id=current_user.id).all()
+        insufficient_stock = []
+        for item in cart_items:
+            available_stock = item.product.stock
+            if item.quantity > available_stock:
+                insufficient_stock.append({
+                    'product_name':item.product.name,
+                    'requested':item.quantity,
+                    'available':available_stock
+                })
+        if insufficient_stock:
+            return jsonify({'error':'Insufficient stock for some items','items':insufficient_stock}),400
+        
         total = sum(item.product.price * item.quantity for item in cart_items)
         order = Order(user_id=current_user.id, total=total)
         db.session.add(order)
@@ -148,6 +160,7 @@ def place_order():
                 order_id=order.id,
                 product_uom = item.product.uom
             )
+            item.product.stock -= item.quantity
             db.session.add(order_detail)
         for cart in current_user.carts:
             db.session.delete(cart)

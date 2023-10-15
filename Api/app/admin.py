@@ -1,9 +1,9 @@
 from flask import Blueprint,jsonify
 from flask_jwt_extended import jwt_required,current_user
 from .decorators import admin_required
-from .models import User,Request,CategoryRequest,Category
+from .models import User,Request,CategoryRequest,Category,ProductRequest,Product
 from .extensions import db
-from .schema import RequestSchema,CategoryRequestSchema
+from .schema import RequestSchema,CategoryRequestSchema,ProductRequestSchema
 
 
 admin_bp = Blueprint('admin_bp',__name__)
@@ -131,5 +131,92 @@ def updated_category_requests():
         category_request_schema = CategoryRequestSchema(many=True)
         category_request_details = category_request_schema.dump(requests)
         return jsonify({'category_requests':category_request_details}),200
+    except Exception as e:
+       return jsonify({'error':'Something went wrong'}),500
+    
+    
+@admin_bp.get('/product_requests')
+@jwt_required()
+@admin_required()
+def get_product_requests():
+    try:
+        requests = ProductRequest.query.filter_by(status = "pending").all()
+        product_request_schema = ProductRequestSchema(many=True)
+        product_request_details = product_request_schema.dump(requests)
+
+        return jsonify({'product_requests':product_request_details}),200
+    except Exception as e:
+       return jsonify({'error':'Something went wrong'}),500
+    
+@admin_bp.post('/approve/product/<int:id>')
+@jwt_required()
+@admin_required()
+def approve_product(id):
+    try:
+        product_request = ProductRequest.query.filter_by(id=id).first()
+        if product_request:
+            if product_request.action == 'add':
+                product = Product.query.filter_by(name=product_request.new_name).first()
+                if product:
+                    return jsonify({'error':'Product already exists'}),400
+                new_product = Product(name=product_request.new_name,price=product_request.new_price,category_id = product_request.category_id,stock=product_request.new_stock,uom=product_request.new_uom,description=product_request.new_desc)
+                db.session.add(new_product)
+                product_request.status = "approved"
+                db.session.commit()
+                return jsonify({'message' : "Approved successfully"}),200
+            elif product_request.action == 'delete':
+                product = Product.query.filter_by(id=product_request.product_id).first()
+                if product:
+                    db.session.delete(product)
+                    product_request.status = "approved"
+                    db.session.commit()
+                    return jsonify({'message' : "Approved successfully"}),200
+                return jsonify({'error':'No Product found'}),404
+            else:
+                product = Product.query.filter_by(id=product_request.product_id).first()
+                if product:
+                    product.name = product_request.new_name
+                    product.price = product_request.new_price
+                    product.stock += product_request.new_stock
+                    product.uom = product_request.new_uom
+                    product.description = product_request.new_desc
+                    product_request.status = "approved"
+                    db.session.commit()
+                    return jsonify({'message' : "Approved successfully"}),200
+                return jsonify({'error':'No Product found'}),404
+        return jsonify({'error':'No Request Found'}),404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'error':'Something went wrong'}),500
+
+@admin_bp.patch('/reject/product/<int:id>')
+@jwt_required()
+@admin_required()
+def reject_product(id):
+    try:
+        product_request = ProductRequest.query.filter_by(id=id).first()
+        if product_request:
+            if product_request.status == 'pending':
+                product_request.status = "rejected"
+                db.session.commit()
+                return jsonify({'message' : "Rejected Successfully"}),200
+            else:
+                return jsonify({'error':'This Request have already been reviewed'}),400
+        return jsonify({'error':'No Request Found'}),404
+
+    except Exception as e:
+        print(e)
+        return jsonify({'error':'Something went wrong'}),500
+    
+@admin_bp.get('/updated_product_requests')
+@jwt_required()
+@admin_required()
+def updated_product_requests():
+    try:
+        requests = ProductRequest.query.filter(ProductRequest.status.in_(['approved', 'rejected'])).all()
+        product_request_schema = ProductRequestSchema(many=True)
+        product_request_details = product_request_schema.dump(requests)
+        return jsonify({'product_requests':product_request_details}),200
     except Exception as e:
        return jsonify({'error':'Something went wrong'}),500

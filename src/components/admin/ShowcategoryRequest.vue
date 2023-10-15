@@ -4,7 +4,7 @@
   </h1>
   <h1 class="center" v-else>No Pending requests</h1>
   <div class="container" v-if="requestDetails.length > 0">
-    <div>
+    <div style="overflow-x: auto">
       <p class="center" v-if="success" style="color: green">{{ success }}</p>
       <p class="center" v-if="error" style="color: red">{{ error }}</p>
       <table>

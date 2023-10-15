@@ -1,5 +1,11 @@
 <template>
-  <h3 class="error">{{ err }}</h3>
+  <h3 class="error" v-if="err">{{ err }}</h3>
+  <div class="error" v-if="insufficient">
+    <p v-for="item in insufficient" :key="item">
+      Name : {{ item.product_name }} | requested: {{ item.requested }} |
+      available: {{ item.available }}
+    </p>
+  </div>
   <div class="cart">
     <div>
       <div class="cart-details" v-for="item in cartDetails" :key="item.id">
@@ -84,7 +90,8 @@ export default {
   name: "CartDetails",
   data() {
     return {
-      err: null,
+      err: "",
+      insufficient: "",
     };
   },
   props: ["cartDetails"],
@@ -127,7 +134,6 @@ export default {
     async removeCartItem(id) {
       try {
         const response = await axios.delete(`/user/cart/${id}/remove`);
-        console.log(response);
         const deleteItem = this.cartDetails.findIndex((item) => item.id === id);
         if (deleteItem !== -1) {
           this.cartDetails.splice(deleteItem, 1);
@@ -148,7 +154,14 @@ export default {
           const response = await axios.post("/user/place_order");
           this.$emit("order-placed");
         } catch (error) {
-          console.log(error);
+          if (error?.response?.data?.error) {
+            this.err = error.response.data.error;
+            this.insufficient = error.response.data.items;
+            this.setErrorTimeout();
+          } else {
+            this.err = err;
+            this.setErrorTimeout();
+          }
         }
       }
     },

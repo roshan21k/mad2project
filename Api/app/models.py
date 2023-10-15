@@ -17,7 +17,7 @@ class User(db.Model):
     orders = db.relationship('Order',backref='user')
     requests = db.relationship('Request',backref='user')
     category_requests = db.relationship('CategoryRequest',backref='user')
-
+    product_requests = db.relationship('ProductRequest',backref='user')
     def __repr__(self):
         return  f"<User {self.username}>"
 
@@ -36,6 +36,7 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20),nullable=False)
     products = db.relationship('Product', backref='category',cascade='all, delete-orphan')
+    product_requests = db.relationship('ProductRequest',backref='category')
     def __repr__(self):
         return f'<Category:{self.name}>'
 
@@ -44,11 +45,13 @@ class Product(db.Model):
     name = db.Column(db.String(50),nullable=False,unique=True)
     price = db.Column(db.Float,nullable=False)
     category_id = db.Column(db.Integer,db.ForeignKey('category.id',ondelete='CASCADE'))
+    stock = db.Column(db.Integer,default=5)
     ratings_sum = db.Column(db.Integer,default=0)
     ratings_count = db.Column(db.Integer,default = 0)
     uom = db.Column(db.String(),nullable=False)
     description = db.Column(db.String(256),nullable=True,default="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.")
     ratings_average = column_property(ratings_sum/ratings_count)
+    product_requests = db.relationship('ProductRequest',backref='product')
 
 class Review(db.Model):
     id = db.Column(db.Integer,primary_key=True)
@@ -69,9 +72,21 @@ class CategoryRequest(db.Model):
     name = db.Column(db.String(20),nullable=False)
     status = db.Column(db.String(20),nullable=False,default="pending")
     old_name = db.Column(db.String(20),nullable=True)
-    user_id =db.Column(db.Integer,db.ForeignKey('user.id'))
     category_id = db.Column(db.Integer,nullable=True)
+    user_id =db.Column(db.Integer,db.ForeignKey('user.id'))
 
+class ProductRequest(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    action = db.Column(db.String(20),nullable=False)
+    status = db.Column(db.String(20),nullable=False,default="pending")
+    new_name = db.Column(db.String(20),nullable=True)
+    new_desc = db.Column(db.String(250),nullable=True)
+    new_price = db.Column(db.Integer,nullable=True)
+    new_uom = db.Column(db.String(20),nullable= True)
+    new_stock = db.Column(db.Integer,nullable=True)
+    product_id = db.Column(db.Integer,db.ForeignKey('product.id'),nullable=True)
+    category_id = db.Column(db.Integer,db.ForeignKey('category.id'))
+    user_id =db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)

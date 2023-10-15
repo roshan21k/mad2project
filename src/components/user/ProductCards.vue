@@ -43,7 +43,6 @@ export default {
     },
   },
 };
-// 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
 </script>
 
 <style scoped>

@@ -71,7 +71,6 @@ export default {
           this.err = error;
           this.clearMessage();
         }
-        console.log(error);
       }
     },
     async getRequests() {
