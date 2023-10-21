@@ -1,10 +1,11 @@
-from flask import Blueprint,jsonify,request
+from flask import Blueprint,jsonify,request,send_file
 from flask_jwt_extended import jwt_required,current_user
 from sqlalchemy import func
 from .decorators import manager_required
 from .models import User,Request,CategoryRequest,Category,ProductRequest,Product
 from .extensions import db
 from .schema import RequestSchema,CategoryRequestSchema,ProductRequestSchema,CategorySchema
+from .task import manager_product_report_task
 
 
 manager_bp = Blueprint('manager_bp',__name__)
@@ -198,3 +199,10 @@ def update_product():
     except Exception as e:
        print(e)
        return jsonify({'error':'Something went wrong'}),500
+
+@manager_bp.get('/export_product_csv')
+@jwt_required()
+@manager_required()
+def product_csv():
+    result = manager_product_report_task.delay(current_user.email)
+    return jsonify({'Message':'Export job Started','id':result.id}),202

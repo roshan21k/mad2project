@@ -1,6 +1,6 @@
 <template>
   <h1 v-if="productDetail" class="heading">
-    Product details for {{ this.productDetail.name }}
+    Product details for {{ productDetail.name }}
   </h1>
 
   <div v-if="productDetail" class="product">
@@ -34,8 +34,12 @@
         {{ productDetail.description }}
       </p>
       <div class="button">
-        <button :disabled="addingToCart" @click="addToCart(productDetail.id)">
-          {{ cartText }}
+        <button
+          :disabled="addingToCart || productDetail.stock === 0"
+          @click="addToCart(productDetail.id)"
+          :class="{ 'sold-out': productDetail.stock === 0 }"
+        >
+          {{ productDetail.stock === 0 ? "Sold Out" : "Add To Cart" }}
         </button>
       </div>
     </div>
@@ -78,7 +82,7 @@ export default {
       cartText: "Add to cart",
       addingToCart: false,
       productDetail: null,
-      category: null,
+      category: "",
       ratings: 5,
       comment: "",
       err: "",
@@ -214,5 +218,8 @@ textarea {
   margin: 25px 0px;
   color: red;
   text-align: center;
+}
+.sold-out {
+  background-color: rgb(255, 75, 75);
 }
 </style>

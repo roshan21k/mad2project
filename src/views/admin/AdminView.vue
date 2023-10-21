@@ -38,6 +38,7 @@ export default {
 }
 .request {
   border: 1px solid black;
+  border-radius: 75px;
   width: 300px;
   height: 150px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);

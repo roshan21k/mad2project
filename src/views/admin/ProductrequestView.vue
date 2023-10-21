@@ -1,12 +1,9 @@
 <template>
-  <div class="filterbox">
-    <button :class="{ selected: isPendingSelected }" @click="showPending">
-      Show Pending requests
-    </button>
-    <button :class="{ selected: isCompletedSelected }" @click="showCompleted">
-      Show Approved/Rejected Requests
-    </button>
-  </div>
+  <request-bar
+    @selected-option="showCurrent"
+    :currentName="'Show Pending Product Requests'"
+    :previousName="'Show Rejected/Approved Requests'"
+  />
   <showproduct-request
     v-if="showRequest"
     :requestDetails="requestDetails"
@@ -19,30 +16,26 @@
 import ShowproductRequest from "@/components/admin/ShowproductRequest.vue";
 import axios from "axios";
 import ShowupdatedproductRequest from "@/components/admin/ShowupdatedproductRequest.vue";
+import RequestBar from "@/components/RequestBar.vue";
 export default {
   name: "ProductrequestView",
-  components: { ShowproductRequest, ShowupdatedproductRequest },
+  components: { ShowproductRequest, ShowupdatedproductRequest, RequestBar },
   data() {
     return {
       requestDetails: [],
       updatedRequestDetails: [],
       showRequest: true,
-      isPendingSelected: true,
-      isCompletedSelected: false,
     };
   },
   methods: {
-    showPending() {
-      this.showRequest = true;
-      this.isPendingSelected = true;
-      this.isCompletedSelected = false;
-      this.getProductRequests();
-    },
-    showCompleted() {
-      this.showRequest = false;
-      this.isPendingSelected = false;
-      this.isCompletedSelected = true;
-      this.getUpdatedRequests();
+    showCurrent(isPendingselected) {
+      if (isPendingselected) {
+        this.showRequest = true;
+        this.getProductRequests();
+      } else {
+        this.showRequest = false;
+        this.getUpdatedRequests();
+      }
     },
     getRequests() {
       this.getProductRequests();
@@ -72,26 +65,4 @@ export default {
 };
 </script>
 
-<style scoped>
-h1 {
-  text-align: center;
-  margin: 50px 0px;
-}
-.filterbox {
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-  margin-top: 50px;
-}
-button {
-  padding: 15px;
-  background-color: white;
-  cursor: pointer;
-}
-button:hover {
-  background-color: lightblue;
-}
-.selected {
-  background-color: lightblue;
-}
-</style>
+<style scoped></style>

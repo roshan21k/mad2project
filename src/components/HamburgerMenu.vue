@@ -56,10 +56,19 @@
       >
         Logout
       </a>
+      <router-link
+        v-if="isAuthenticated"
+        :to="{ name: 'about' }"
+        class="link"
+        @click="isOpen = false"
+      >
+        <img src="../assets/user.png" />
+      </router-link>
     </ul>
   </nav>
 </template>
 <script>
+import axios from "axios";
 import { mapState } from "vuex";
 export default {
   data() {
@@ -83,6 +92,7 @@ export default {
           links.push({ to: { name: "home" }, text: "Home" });
           links.push({ to: { name: "order" }, text: "Orders" });
           links.push({ to: { name: "manage" }, text: "Manage" });
+          links.push({ to: { name: "export" }, text: "Export" });
         }
       }
 
@@ -90,8 +100,13 @@ export default {
     },
   },
   methods: {
-    handleLogout() {
+    async handleLogout() {
       this.isOpen = false;
+      try {
+        const response = await axios.delete("/auth/logout");
+      } catch (error) {
+        console.log(error);
+      }
       this.$store.dispatch("logout");
       this.$router.push("/login");
     },
@@ -117,8 +132,6 @@ header {
   position: fixed;
   width: 100%;
   z-index: 1;
-  /* border-bottom: 1px solid rgba(0, 0, 0, 0.399); */
-  /* box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2); */
   backdrop-filter: blur(5px);
   background-color: rgba(255, 255, 255, 0.75);
   height: 75px;
@@ -143,7 +156,7 @@ ul {
 }
 .link:hover {
   color: rgb(0, 0, 0);
-  /* font-weight: bold; */
+  text-decoration: underline;
 }
 .logo {
   text-decoration: none;

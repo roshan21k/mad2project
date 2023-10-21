@@ -6,6 +6,11 @@
     <div>
       <div class="filter-group">
         <div>
+          <label>Search :</label>
+          <input type="text" v-model="search" @input="handleSearch" />
+        </div>
+
+        <div>
           <label for="category">Category :</label>
           <select v-model="selectedCategory" @change="handleCategoryChange">
             <option value="">All Categories</option>
@@ -43,23 +48,21 @@ export default {
     return {
       selectedCategory: "",
       selectedPriceRange: this.maxPrice,
+      search: "",
     };
   },
   props: ["options", "maxPrice", "minPrice"],
 
   methods: {
+    handleSearch() {
+      this.$emit("name-search", this.search);
+    },
     handleCategoryChange() {
       this.$emit("category-selected", this.selectedCategory);
     },
     handlePriceChange() {
       //   console.log(this.selectedPriceRange);
       this.$emit("price-selected", this.selectedPriceRange);
-    },
-  },
-  watch: {
-    selectedCategory(val) {
-      console.log(val);
-      console.log(this.maxPrice);
     },
   },
   watch: {

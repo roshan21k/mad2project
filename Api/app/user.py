@@ -1,9 +1,10 @@
 from flask import Blueprint,jsonify,request
 from sqlalchemy import func
 from flask_jwt_extended import jwt_required,current_user
-from .models import Category,Product,Cart,Order,OrderDetail,Review,Request
+from .models import Category,Product,Cart,Order,OrderDetail,Review,Request,Sale
 from .extensions import db
-from .schema import CategorySchema,ProductSchema,CartSchema,OrderSchema,OrderDetailsSchema,ReviewSchema,RequestSchema
+from .schema import CategorySchema,ProductSchema,CartSchema,OrderSchema,OrderDetailsSchema,ReviewSchema,RequestSchema,UserSchema
+from .task import *
 user_bp = Blueprint('user',__name__)
 
 @user_bp.get('/')
@@ -149,7 +150,6 @@ def place_order():
         total = sum(item.product.price * item.quantity for item in cart_items)
         order = Order(user_id=current_user.id, total=total)
         db.session.add(order)
-        db.session.commit()
 
         for item in cart_items:
             order_detail = OrderDetail(
@@ -157,16 +157,19 @@ def place_order():
                 product_name=item.product.name,
                 product_price=item.product.price,
                 quantity=item.quantity,
-                order_id=order.id,
+                order=order,
                 product_uom = item.product.uom
             )
             item.product.stock -= item.quantity
+            sale = Sale(product_id=item.product_id,stock_sold =item.quantity)
             db.session.add(order_detail)
+            db.session.add(sale)
         for cart in current_user.carts:
             db.session.delete(cart)
         db.session.commit()
+        result = send_order_email_task.delay(order.id,current_user.id,current_user.email)
 
-        return jsonify({'message':'Order Placed Successfully'}),200
+        return jsonify({'message':'Order Placed Successfully','result':result.id}),200
     except Exception as e:
         print(e)
         db.session.rollback()
@@ -260,3 +263,14 @@ def get_requests():
         print(e)
         return jsonify({'error':'something went wrong'}),500
     
+@user_bp.get('/about_me')
+@jwt_required()
+def about_me():
+    try:
+        about = current_user
+        user_schema = UserSchema()
+        user_details = user_schema.dump(about)
+        return jsonify({"about":user_details})
+    except Exception as e:
+        print(e)
+        return jsonify({'error':'something went wrong'}),500

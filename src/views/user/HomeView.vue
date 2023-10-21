@@ -1,27 +1,26 @@
 <template>
-  <!-- <h1>{{ this.$store.state.isAuthenticated }}</h1>
-  <h2>{{ this.$store.state.userRole }}</h2> -->
-  <!-- <h2>Welcome User</h2> -->
-
   <filter-bar
     :options="filterOptions"
     :maxPrice="maxPrice"
     :minPrice="minPrice"
     @category-selected="filterCategories"
     @price-selected="filterPrice"
+    @name-search="filterSearch"
   />
   <div v-for="x in categories" :key="x.id">
-    <h2 v-if="categoryid === 0">{{ x.name }}</h2>
-    <h2 v-else-if="x.id === categoryid">{{ x.name }}</h2>
+    <h2 v-if="categoryid === 0 && !searchName">{{ x.name }}</h2>
+    <h2 v-else-if="x.id === categoryid && !searchName">{{ x.name }}</h2>
     <product-cards
       v-if="categoryid === 0"
       :product="x.products"
       :selectedPrice="price"
+      :searchName="searchName"
     />
     <product-cards
       v-else-if="x.id === categoryid"
       :product="x.products"
       :selectedPrice="price"
+      :searchName="searchName"
     />
   </div>
 </template>
@@ -44,6 +43,7 @@ export default {
       minPrice: 0,
       categoryid: 0,
       price: 0,
+      searchName: "",
     };
   },
   name: "HomeView",
@@ -51,6 +51,9 @@ export default {
     ...mapState(["isAuthenticated", "userRole"]),
   },
   methods: {
+    filterSearch(name) {
+      this.searchName = name;
+    },
     filterCategories(id) {
       if (id == "") {
         this.categoryid = 0;

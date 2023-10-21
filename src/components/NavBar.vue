@@ -24,6 +24,7 @@
           >
             <img src="../assets/cart.png" />
           </router-link>
+
           <router-link
             v-if="!isAuthenticated"
             class="link"
@@ -45,12 +46,16 @@
           >
             Logout
           </a>
+          <router-link v-if="isAuthenticated" :to="{ name: 'about' }">
+            <img src="../assets/user.png" />
+          </router-link>
         </ul>
       </nav>
     </header>
   </div>
 </template>
 <script>
+import axios from "axios";
 import { mapState } from "vuex";
 import HamburgerMenuVue from "./HamburgerMenu.vue";
 export default {
@@ -76,6 +81,7 @@ export default {
           links.push({ to: { name: "home" }, text: "Home" });
           links.push({ to: { name: "order" }, text: "Orders" });
           links.push({ to: { name: "manage" }, text: "Manage" });
+          links.push({ to: { name: "export" }, text: "Export" });
         }
       }
 
@@ -90,7 +96,13 @@ export default {
         this.isMobile = false;
       }
     },
-    handleLogout() {
+    async handleLogout() {
+      try {
+        this.isOpen = false;
+        const response = await axios.delete("/auth/logout");
+      } catch (error) {
+        console.log(error);
+      }
       this.$store.dispatch("logout");
       this.$router.push("/login");
     },
@@ -145,6 +157,7 @@ ul {
 }
 .link:hover {
   color: rgb(0, 0, 0);
+  text-decoration: underline;
   /* font-weight: bold; */
 }
 .logo {

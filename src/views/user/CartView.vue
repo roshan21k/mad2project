@@ -15,7 +15,7 @@
 
 <script>
 import axios from "axios";
-import CartDetails from "../../components/user/CartDetails.vue";
+import CartDetails from "@/components/user/CartDetails.vue";
 export default {
   name: "CartView",
   components: { CartDetails },
@@ -23,11 +23,11 @@ export default {
     return {
       cartDetails: [],
       orderPlaced: false,
-      countDown: 5,
+      countDown: 2,
     };
   },
   methods: {
-    orderHasPlaced() {
+    orderHasPlaced(id) {
       this.orderPlaced = true;
       const countDownInterval = setInterval(() => {
         this.countDown--;

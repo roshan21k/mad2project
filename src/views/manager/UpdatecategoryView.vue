@@ -1,18 +1,9 @@
 <template>
-  <div class="filterbox">
-    <button
-      :class="{ selected: isUpdateSelected, 'filter-button': true }"
-      @click="showAdd"
-    >
-      Update Category
-    </button>
-    <button
-      :class="{ selected: isShowSelected, 'filter-button': true }"
-      @click="showPrevious"
-    >
-      Show Previous Requests
-    </button>
-  </div>
+  <request-bar
+    @selected-option="showCurrent"
+    :currentName="'Update Category'"
+    :previousName="'Show Previous Update Requests'"
+  />
   <h1 class="title" v-if="isUpdateSelected">Update category</h1>
   <div class="container" v-if="isUpdateSelected">
     <form class="category" @submit.prevent="handleSubmit">
@@ -38,10 +29,11 @@
 
 <script>
 import axios from "axios";
-import CategoryrequestTable from "../../components/CategoryrequestTable.vue";
+import CategoryrequestTable from "@/components/manager/CategoryrequestTable.vue";
+import RequestBar from "@/components/RequestBar.vue";
 export default {
   name: "UpdatecategoryView",
-  components: { CategoryrequestTable },
+  components: { CategoryrequestTable, RequestBar },
   data() {
     return {
       err: "",
@@ -51,18 +43,17 @@ export default {
       selectedCategory: 0,
       newName: "",
       isUpdateSelected: true,
-      isShowSelected: false,
     };
   },
   methods: {
-    showAdd() {
-      (this.isUpdateSelected = true),
-        (this.isShowSelected = false),
+    showCurrent(isUpdateSelect) {
+      if (isUpdateSelect) {
+        this.isUpdateSelected = true;
         this.getRequests();
-    },
-    showPrevious() {
-      (this.isUpdateSelected = false), (this.isShowSelected = true);
-      this.getRequests();
+      } else {
+        this.isUpdateSelected = false;
+        this.getRequests();
+      }
     },
     async handleSubmit() {
       try {
@@ -160,22 +151,5 @@ p {
 }
 .error {
   color: red;
-}
-.filterbox {
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-  margin-top: 50px;
-}
-.filter-button {
-  padding: 15px;
-  background-color: white;
-  cursor: pointer;
-}
-.filter-button:hover {
-  background-color: lightblue;
-}
-.selected {
-  background-color: lightblue;
 }
 </style>

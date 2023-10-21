@@ -5,6 +5,7 @@ import SignupView from "../views/auth/SignupView.vue";
 import AdminView from "../views/admin/AdminView.vue";
 import UnauthorisedView from "../views/auth/UnauthorisedView.vue";
 import CartView from "../views/user/CartView.vue";
+import AboutmeView from "../views/user/AboutmeView.vue";
 import OrderView from "../views/user/OrderView.vue";
 import OrderdetailsView from "../views/user/OrderdetailsView.vue";
 import ProductdetailsView from "../views/user/ProductdetailsView.vue";
@@ -19,6 +20,7 @@ import AddcategoryView from "../views/manager/AddcategoryView.vue";
 import UpdatecategoryView from "../views/manager/UpdatecategoryView.vue";
 import DeletecategoryView from "../views/manager/DeletecategoryView.vue";
 import ProductrequestView from "../views/admin/ProductrequestView.vue";
+import ExportView from "../views/manager/ExportView.vue";
 import store from "@/store";
 const routes = [
   {
@@ -26,6 +28,12 @@ const routes = [
     name: "home",
     component: HomeView,
     meta: { requiresAuth: true, role: ["user", "manager"] },
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: AboutmeView,
+    meta: { requiresAuth: true, role: [] },
   },
   {
     path: "/product/:id",
@@ -99,6 +107,12 @@ const routes = [
     path: "/delete-category",
     name: "deleteCategory",
     component: DeletecategoryView,
+    meta: { requiresAuth: true, role: ["manager"] },
+  },
+  {
+    path: "/export",
+    name: "export",
+    component: ExportView,
     meta: { requiresAuth: true, role: ["manager"] },
   },
   {

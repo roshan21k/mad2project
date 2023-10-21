@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" v-if="filteredProduct.length > 0">
     <div class="product-card" v-for="x in filteredProduct" :key="x">
       <productcard-info :productItem="x" />
     </div>
@@ -12,34 +12,33 @@ import ProductcardInfo from "./ProductcardInfo.vue";
 export default {
   components: { ProductcardInfo },
   data() {
-    return {
-      msg: null,
-    };
+    return {};
   },
-  props: ["product", "selectedPrice"],
+  props: ["product", "selectedPrice", "searchName"],
   methods: {
     async addToCart(id) {
       try {
         const response = await axios.post(`user/cart/${id}`);
-        console.log(response.data.message);
         this.msg = response.data.message;
-      } catch (err) {
-        if (!err.response.data.error) {
-          this.msg = err;
-        } else {
-          this.msg = err.response.data.error;
-        }
-        console.log(err);
+      } catch (error) {
+        console.log(error);
       }
     },
   },
   computed: {
     filteredProduct() {
-      if (!this.selectedPrice) {
-        return this.product;
-      } else {
-        return this.product.filter((x) => x.price <= this.selectedPrice);
+      let filteredProducts = this.product;
+      if (this.selectedPrice) {
+        filteredProducts = this.product.filter(
+          (x) => x.price <= this.selectedPrice
+        );
       }
+      if (this.searchName) {
+        filteredProducts = this.product.filter((x) =>
+          x.name.toLowerCase().includes(this.searchName.toLowerCase())
+        );
+      }
+      return filteredProducts;
     },
   },
 };
@@ -66,5 +65,8 @@ img {
 }
 .product-card * {
   padding: 10px 10px;
+}
+.center {
+  text-align: center;
 }
 </style>

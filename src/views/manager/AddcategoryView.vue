@@ -1,18 +1,9 @@
 <template>
-  <div class="filterbox">
-    <button
-      :class="{ selected: isAddSelected, 'filter-button': true }"
-      @click="showAdd"
-    >
-      Add Category
-    </button>
-    <button
-      :class="{ selected: isShowSelected, 'filter-button': true }"
-      @click="showPrevious"
-    >
-      Show Previous Requests
-    </button>
-  </div>
+  <request-bar
+    @selected-option="showCurrent"
+    :currentName="'Add Category'"
+    :previousName="'Show Previous Add Requests'"
+  />
   <h1 class="title" v-if="isAddSelected">Add category</h1>
   <div class="container" v-if="isAddSelected">
     <form class="category" @submit.prevent="handleSubmit">
@@ -29,10 +20,11 @@
 
 <script>
 import axios from "axios";
-import CategoryrequestTable from "../../components/CategoryrequestTable.vue";
+import CategoryrequestTable from "@/components/manager/CategoryrequestTable.vue";
+import RequestBar from "@/components/RequestBar.vue";
 export default {
   name: "AddcategoryView",
-  components: { CategoryrequestTable },
+  components: { CategoryrequestTable, RequestBar },
   data() {
     return {
       updatedName: "",
@@ -40,15 +32,17 @@ export default {
       success: "",
       requestDetails: [],
       isAddSelected: true,
-      isShowSelected: false,
     };
   },
   methods: {
-    showAdd() {
-      (this.isAddSelected = true), (this.isShowSelected = false);
-    },
-    showPrevious() {
-      (this.isAddSelected = false), (this.isShowSelected = true);
+    showCurrent(isAddSelect) {
+      if (isAddSelect) {
+        this.isAddSelected = true;
+        this.getRequests();
+      } else {
+        this.isAddSelected = false;
+        this.getRequests();
+      }
     },
     async handleSubmit() {
       try {
@@ -127,22 +121,5 @@ p {
 }
 .error {
   color: red;
-}
-.filterbox {
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-  margin-top: 50px;
-}
-.filter-button {
-  padding: 15px;
-  background-color: white;
-  cursor: pointer;
-}
-.filter-button:hover {
-  background-color: lightblue;
-}
-.selected {
-  background-color: lightblue;
 }
 </style>

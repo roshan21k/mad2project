@@ -1,46 +1,45 @@
 <template>
-  <h1 v-if="roles.length > 0">Pending Role Requests</h1>
-  <div class="container" v-if="roles.length > 0">
-    <div style="overflow-x: auto">
-      <table>
-        <thead>
-          <th>ID</th>
-          <th>Username</th>
-          <th>User email</th>
-          <th>Role</th>
-          <th>Approve/Reject</th>
-        </thead>
-        <tbody>
-          <tr v-for="role in roles" :key="role.id">
-            <td>{{ role.id }}</td>
-            <td>{{ role.user.username }}</td>
-            <td>{{ role.user.email }}</td>
-            <td>{{ role.role }}</td>
-            <td>
-              <button class="approve" @click="approveRole(role.id)">
-                Approve</button
-              ><button class="reject" @click="rejectRole(role.id)">
-                Reject
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div v-else><h1>No Pending Requests</h1></div>
+  <request-bar
+    @selected-option="showCurrent"
+    :currentName="'Show Pending Role Requests'"
+    :previousName="'Show Rejected/Approved Requests'"
+  />
+  <showrole-request
+    v-if="showRequest"
+    :roles="roles"
+    @request="getRequests()"
+  />
+  <showupdatedrole-request v-else :roles="updatedRoles" />
 </template>
 
 <script>
 import axios from "axios";
+import RequestBar from "@/components/RequestBar.vue";
+import ShowroleRequest from "@/components/admin/ShowroleRequest.vue";
+import ShowupdatedroleRequest from "@/components/admin/ShowupdatedroleRequest.vue";
 export default {
   name: "RoleView",
+  components: { RequestBar, ShowroleRequest, ShowupdatedroleRequest },
   data() {
     return {
       roles: [],
+      updatedRoles: [],
+      showRequest: true,
     };
   },
   methods: {
+    showCurrent(isPendingselected) {
+      if (isPendingselected) {
+        this.showRequest = true;
+        this.getRoleDetails();
+      } else {
+        this.showRequest = false;
+        this.getUpdatedRoleDetails();
+      }
+    },
+    getRequests() {
+      this.getRoleDetails();
+    },
     async getRoleDetails() {
       try {
         const response = await axios.get("/admin/roles");
@@ -49,18 +48,10 @@ export default {
         console.log(error);
       }
     },
-    async rejectRole(id) {
+    async getUpdatedRoleDetails() {
       try {
-        const response = await axios.patch(`/admin/reject/${id}`);
-        this.getRoleDetails();
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async approveRole(id) {
-      try {
-        const response = await axios.patch(`/admin/approve/${id}`);
-        this.getRoleDetails();
+        const response = await axios.get("/admin/updated_roles");
+        this.updatedRoles = response.data.updated_role_details;
       } catch (error) {
         console.log(error);
       }
@@ -68,6 +59,7 @@ export default {
   },
   created() {
     this.getRoleDetails();
+    this.getUpdatedRoleDetails();
   },
 };
 </script>

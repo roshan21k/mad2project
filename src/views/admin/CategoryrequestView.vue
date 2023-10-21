@@ -1,12 +1,9 @@
 <template>
-  <div class="filterbox">
-    <button :class="{ selected: isPendingSelected }" @click="showPending">
-      Show Pending requests
-    </button>
-    <button :class="{ selected: isCompletedSelected }" @click="showCompleted">
-      Show Approved/Rejected Requests
-    </button>
-  </div>
+  <request-bar
+    @selected-option="showCurrent"
+    :currentName="'Show Pending Category Requests'"
+    :previousName="'Show Rejected/Approved Requests'"
+  />
   <showcategory-request
     v-if="showRequest"
     :requestDetails="requestDetails"
@@ -19,33 +16,29 @@
 </template>
 
 <script>
-import ShowcategoryRequest from "../../components/admin/ShowcategoryRequest.vue";
-import ShowupdatedcategoryRequest from "../../components/admin/ShowupdatedcategoryRequest.vue";
+import ShowcategoryRequest from "@/components/admin/ShowcategoryRequest.vue";
+import ShowupdatedcategoryRequest from "@/components/admin/ShowupdatedcategoryRequest.vue";
+import RequestBar from "@/components/RequestBar.vue";
 import axios from "axios";
 export default {
   name: "RequestView",
-  components: { ShowcategoryRequest, ShowupdatedcategoryRequest },
+  components: { ShowcategoryRequest, ShowupdatedcategoryRequest, RequestBar },
   data() {
     return {
       requestDetails: [],
       updatedRequestDetails: [],
       showRequest: true,
-      isPendingSelected: true,
-      isCompletedSelected: false,
     };
   },
   methods: {
-    showPending() {
-      this.showRequest = true;
-      this.isPendingSelected = true;
-      this.isCompletedSelected = false;
-      this.getCategoryRequests();
-    },
-    showCompleted() {
-      this.showRequest = false;
-      this.isPendingSelected = false;
-      this.isCompletedSelected = true;
-      this.getUpdatedRequests();
+    showCurrent(isPendingselected) {
+      if (isPendingselected) {
+        this.showRequest = true;
+        this.getCategoryRequests();
+      } else {
+        this.showRequest = false;
+        this.getUpdatedRequests();
+      }
     },
     getRequests() {
       this.getCategoryRequests();
@@ -75,26 +68,4 @@ export default {
 };
 </script>
 
-<style scoped>
-h1 {
-  text-align: center;
-  margin: 50px 0px;
-}
-.filterbox {
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-  margin-top: 50px;
-}
-button {
-  padding: 15px;
-  background-color: white;
-  cursor: pointer;
-}
-button:hover {
-  background-color: lightblue;
-}
-.selected {
-  background-color: lightblue;
-}
-</style>
+<style scoped></style>

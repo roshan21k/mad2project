@@ -20,6 +20,19 @@ def get_roles():
         return jsonify({'role_details' : role_details}),200
     except Exception as e:
         return jsonify({'error':'Something went wrong'}),500
+    
+@admin_bp.get('/updated_roles')
+@jwt_required()
+@admin_required()
+def get_updated_roles():
+    try:
+        requests = Request.query.filter(Request.status.in_(['approved', 'rejected'])).all()
+        print(requests)
+        role_schema = RequestSchema(many=True)
+        role_details = role_schema.dump(requests)
+        return jsonify({'updated_role_details' : role_details}),200
+    except Exception as e:
+        return jsonify({'error':'Something went wrong'}),500
 
 @admin_bp.patch('/approve/<int:id>')
 @jwt_required()

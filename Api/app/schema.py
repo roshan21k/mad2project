@@ -4,6 +4,7 @@ class UserSchema(Schema):
     id = fields.Integer()
     username = fields.String()
     email = fields.String()
+    role = fields.String()
 class ProductSchema(Schema):
     id = fields.Integer()
     name = fields.String()

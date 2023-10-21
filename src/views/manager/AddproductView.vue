@@ -1,18 +1,9 @@
 <template>
-  <div class="filterbox">
-    <button
-      :class="{ selected: isAddSelected, 'filter-button': true }"
-      @click="showAdd"
-    >
-      Add Product
-    </button>
-    <button
-      :class="{ selected: isShowSelected, 'filter-button': true }"
-      @click="showPrevious"
-    >
-      Show Previous Requests
-    </button>
-  </div>
+  <request-bar
+    @selected-option="showCurrent"
+    :currentName="'Add Product'"
+    :previousName="'Show Previous Add Requests'"
+  />
   <div v-if="isAddSelected" class="container">
     <form class="add-product" @submit.prevent="handleSubmit">
       <h2 class="center">Add Product Form</h2>
@@ -71,9 +62,10 @@
 <script>
 import axios from "axios";
 import ProductrequestTable from "@/components/manager/ProductrequestTable.vue";
+import RequestBar from "@/components/RequestBar.vue";
 export default {
   name: "AddproductView",
-  components: { ProductrequestTable },
+  components: { ProductrequestTable, RequestBar },
   data() {
     return {
       newName: "",
@@ -87,24 +79,22 @@ export default {
       success: "",
       requestDetails: [],
       isAddSelected: true,
-      isShowSelected: false,
     };
   },
   computed: {
     addRequestDetails() {
-      if (this.requestDetails.length > 0) {
-        return this.requestDetails.filter((item) => item.action === "add");
-      }
+      return this.requestDetails.filter((item) => item.action === "add");
     },
   },
   methods: {
-    showAdd() {
-      (this.isAddSelected = true), (this.isShowSelected = false);
-      this.getCategories();
-    },
-    showPrevious() {
-      (this.isAddSelected = false), (this.isShowSelected = true);
-      this.productRequests();
+    showCurrent(isAddSelect) {
+      if (isAddSelect) {
+        this.isAddSelected = true;
+        this.productRequests();
+      } else {
+        this.isAddSelected = false;
+        this.productRequests();
+      }
     },
     formValidation() {
       if (this.newName < 5) {
@@ -210,22 +200,5 @@ textarea {
 }
 .center {
   text-align: center;
-}
-.filterbox {
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-  margin-top: 50px;
-}
-.filter-button {
-  padding: 15px;
-  background-color: white;
-  cursor: pointer;
-}
-.filter-button:hover {
-  background-color: lightblue;
-}
-.selected {
-  background-color: lightblue;
 }
 </style>

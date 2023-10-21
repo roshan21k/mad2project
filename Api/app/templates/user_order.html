@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      table {
+        margin-bottom: 50px;
+        border: 1px solid black;
+        width: 100%;
+      }
+      th {
+        border-bottom: 1px solid black;
+        padding: 15px;
+        font-size: 1rem;
+      }
+      td {
+        padding: 10px 20px;
+        text-align: center;
+        font-size: 1rem;
+      }
+      .total {
+        font-weight: bold;
+      }
+      .total-row td {
+        border-top: 1px solid black;
+      }
+      .center {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="center">Thank You for shopping with us</h1>
+    <br />
+    <h3 class="center">Please Find below Your Order details</h3>
+    <br />
+
+    <table>
+      <thead>
+        <th>SNo</th>
+        <th>Name</th>
+        <th>quantity</th>
+        <th>price</th>
+      </thead>
+      <tbody>
+        {% set ns = namespace(total=0) %} {% for order_detail in order_details
+        %}
+        <tr>
+          <td>{{loop.index}}</td>
+          <td>{{ order_detail.product_name }}</td>
+          <td>{{ order_detail.quantity }} {{ order_detail.product_uom }}</td>
+          <td>{{ order_detail.quantity * order_detail.product_price }}</td>
+        </tr>
+        {% set ns.total = ns.total + order_detail.quantity *
+        order_detail.product_price %} {% endfor %}
+        <tr class="total-row">
+          <td class="total">Total</td>
+          <td></td>
+          <td></td>
+          <td class="total">&#x20B9; {{ns.total}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

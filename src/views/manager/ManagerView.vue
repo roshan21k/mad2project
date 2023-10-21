@@ -35,7 +35,18 @@
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+export default {
+  methods: {
+    async csvDownload() {
+      try {
+        const response = axios.get("/manager/export_product_csv");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -48,6 +59,7 @@ export default {};
   margin: 50px;
   padding: 15px;
   border: 1px solid black;
+  border-radius: 75px;
   width: 300px;
   height: 150px;
   display: flex;

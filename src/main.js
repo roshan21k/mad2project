@@ -25,7 +25,8 @@ axios.interceptors.response.use(
   async (error) => {
     if (
       error.response?.status === 401 &&
-      error.response?.statusText === "UNAUTHORIZED"
+      error.response?.statusText === "UNAUTHORIZED" &&
+      error.response.data.msg === "Token has expired"
     ) {
       console.log("Authentication error, trying to refresh");
       try {

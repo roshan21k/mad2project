@@ -1,18 +1,9 @@
 <template>
-  <div class="filterbox">
-    <button
-      :class="{ selected: isUpdateSelected, 'filter-button': true }"
-      @click="showUpdate"
-    >
-      Update Product
-    </button>
-    <button
-      :class="{ selected: isShowSelected, 'filter-button': true }"
-      @click="showPrevious"
-    >
-      Show Previous Requests
-    </button>
-  </div>
+  <request-bar
+    @selected-option="showCurrent"
+    :currentName="'Update Product'"
+    :previousName="'Show Previous Update Requests'"
+  />
   <div v-if="isUpdateSelected" class="container">
     <form class="add-product" @submit.prevent="handleSubmit">
       <h2 class="center">Update Product Form</h2>
@@ -94,9 +85,10 @@
 <script>
 import axios from "axios";
 import ProductrequestTable from "@/components/manager/ProductrequestTable.vue";
+import RequestBar from "@/components/RequestBar.vue";
 export default {
   name: "AddproductView",
-  components: { ProductrequestTable },
+  components: { ProductrequestTable, RequestBar },
   data() {
     return {
       newName: "",
@@ -112,7 +104,6 @@ export default {
       success: "",
       requestDetails: [],
       isUpdateSelected: true,
-      isShowSelected: false,
       allDetails: [],
       selectedCategory: 0,
       selectedProduct: 0,
@@ -128,18 +119,19 @@ export default {
       }
     },
     updateRequestDetails() {
-      if (this.requestDetails.length > 0) {
-        return this.requestDetails.filter((item) => item.action === "update");
-      }
+      return this.requestDetails.filter((item) => item.action === "update");
     },
   },
 
   methods: {
-    showUpdate() {
-      (this.isUpdateSelected = true), (this.isShowSelected = false);
-    },
-    showPrevious() {
-      (this.isUpdateSelected = false), (this.isShowSelected = true);
+    showCurrent(isUpdateSelect) {
+      if (isUpdateSelect) {
+        this.isUpdateSelected = true;
+        this.productRequests();
+      } else {
+        this.isUpdateSelected = false;
+        this.productRequests();
+      }
     },
     showOldInfo() {
       if (this.selectedProduct) {
@@ -156,7 +148,7 @@ export default {
         this.oldPrice = prodDetails.price;
         this.oldStock = prodDetails.stock;
         this.newPrice = prodDetails.price;
-        this.newStock = prodDetails.stock;
+        this.newStock = 0;
       }
     },
     async getAllDetails() {

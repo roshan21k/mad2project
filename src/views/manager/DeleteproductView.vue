@@ -1,18 +1,9 @@
 <template>
-  <div class="filterbox">
-    <button
-      :class="{ selected: isDeleteSelected, 'filter-button': true }"
-      @click="showDelete"
-    >
-      Delete Product
-    </button>
-    <button
-      :class="{ selected: isShowSelected, 'filter-button': true }"
-      @click="showPrevious"
-    >
-      Show Previous Requests
-    </button>
-  </div>
+  <request-bar
+    @selected-option="showCurrent"
+    :currentName="'Delete Product'"
+    :previousName="'Show Previous Delete Requests'"
+  />
   <div v-if="isDeleteSelected" class="container">
     <form class="add-product" @submit.prevent="handleSubmit">
       <h2 class="center">Delete Product Form</h2>
@@ -52,9 +43,10 @@
 <script>
 import axios from "axios";
 import ProductrequestTable from "@/components/manager/ProductrequestTable.vue";
+import RequestBar from "@/components/RequestBar.vue";
 export default {
   name: "AddproductView",
-  components: { ProductrequestTable },
+  components: { ProductrequestTable, RequestBar },
   data() {
     return {
       selectedCategory: 0,
@@ -64,7 +56,6 @@ export default {
       success: "",
       requestDetails: [],
       isDeleteSelected: true,
-      isShowSelected: false,
     };
   },
   computed: {
@@ -77,19 +68,18 @@ export default {
       }
     },
     deleteRequestDetails() {
-      if (this.requestDetails.length > 0) {
-        return this.requestDetails.filter((item) => item.action === "delete");
-      }
+      return this.requestDetails.filter((item) => item.action === "delete");
     },
   },
   methods: {
-    showDelete() {
-      (this.isDeleteSelected = true), (this.isShowSelected = false);
-    },
-    showPrevious() {
-      (this.isDeleteSelected = false),
-        (this.isShowSelected = true),
+    showCurrent(isDeleteSelect) {
+      if (isDeleteSelect) {
+        this.isDeleteSelected = true;
         this.productRequests();
+      } else {
+        this.isDeleteSelected = false;
+        this.productRequests();
+      }
     },
     async getAllDetails() {
       try {

@@ -52,6 +52,13 @@ class Product(db.Model):
     description = db.Column(db.String(256),nullable=True,default="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.")
     ratings_average = column_property(ratings_sum/ratings_count)
     product_requests = db.relationship('ProductRequest',backref='product')
+    sales = db.relationship('Sale',backref='product')
+
+class Sale(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    stock_sold = db.Column(db.Integer, nullable=False)
+    sale_date = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Review(db.Model):
     id = db.Column(db.Integer,primary_key=True)
@@ -108,4 +115,4 @@ class OrderDetail(db.Model):
     
 
     def __repr__(self):
-        return f'<Product:{self.name}>'
+        return f'<Product:{self.id}>'

@@ -1,11 +1,18 @@
 from flask import Blueprint,request,jsonify
 from werkzeug.security import generate_password_hash,check_password_hash
-from flask_jwt_extended import create_access_token,create_refresh_token,jwt_required,current_user,get_jwt_identity
+from flask_jwt_extended import create_access_token,create_refresh_token,jwt_required,current_user,get_jwt_identity,get_jwt
 from .extensions import db
 from .models import User
+import redis
+from datetime import timedelta
 
 
 auth_bp = Blueprint('auth',__name__)
+
+jwt_redis_blocklist = redis.StrictRedis(
+    host="localhost", port=6379, db=0, decode_responses=True
+)
+ACCESS_EXPIRES = timedelta(hours=1)
 
 @auth_bp.post('/register')
 def register():
@@ -74,3 +81,10 @@ def refresh_token():
     identity = get_jwt_identity()
     new_access_token = create_access_token(identity=identity)
     return jsonify({"access":new_access_token})
+
+@auth_bp.delete('/logout')
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    jwt_redis_blocklist.set(jti, "", ex=ACCESS_EXPIRES)
+    return jsonify(msg="Access token revoked")

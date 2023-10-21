@@ -152,7 +152,7 @@ export default {
       if (this.cartDetails.length !== 0) {
         try {
           const response = await axios.post("/user/place_order");
-          this.$emit("order-placed");
+          this.$emit("order-placed", response.data.order_id);
         } catch (error) {
           if (error?.response?.data?.error) {
             this.err = error.response.data.error;
