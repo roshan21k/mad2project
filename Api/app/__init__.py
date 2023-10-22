@@ -1,4 +1,4 @@
-from flask import Flask,jsonify
+from flask import Flask
 from datetime import timedelta
 import redis
 from .auth import auth_bp
@@ -6,8 +6,8 @@ from .admin import admin_bp
 from .user import user_bp
 from .mail import mail_bp
 from .manager import manager_bp
-from .extensions import db,jwt,cors,mail,cel
-from .models import User,Product
+from .extensions import db,jwt,cors,mail,cache
+from .models import User
 from .initial import insert_default_data,create_admin
 from .workers import celery_init_app
 import os
@@ -31,6 +31,7 @@ def create_app() -> Flask:
     jwt.init_app(app)
     cors.init_app(app)
     mail.init_app(app)
+    cache.init_app(app)
 
 
     with app.app_context():

@@ -11,7 +11,7 @@
         </div>
 
         <div>
-          <label for="category">Category :</label>
+          <label for="category">Category : </label>
           <select v-model="selectedCategory" @change="handleCategoryChange">
             <option value="">All Categories</option>
             <option
@@ -36,21 +36,39 @@
             <p>{{ selectedPriceRange }} Rs</p>
           </div>
         </div>
+        <div>
+          <label>Ratings : </label>
+          <select v-model="selectedRating" @change="handleRatingChange">
+            <option value="0">All Ratings</option>
+            <option v-for="star in 5" :key="star" :value="star">
+              {{ "⭐".repeat(star) }} {{ star }} +
+            </option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import StarRating from "vue-star-rating";
 export default {
+  components: { StarRating },
   name: "FilterBar",
   data() {
     return {
       selectedCategory: "",
       selectedPriceRange: this.maxPrice,
       search: "",
+      selectedRating: 0,
     };
   },
+  emits: [
+    "name-search",
+    "category-selected",
+    "price-selected",
+    "rating-selected",
+  ],
   props: ["options", "maxPrice", "minPrice"],
 
   methods: {
@@ -63,6 +81,9 @@ export default {
     handlePriceChange() {
       //   console.log(this.selectedPriceRange);
       this.$emit("price-selected", this.selectedPriceRange);
+    },
+    handleRatingChange() {
+      this.$emit("rating-selected", this.selectedRating);
     },
   },
   watch: {
@@ -87,7 +108,7 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 50px;
+  gap: 10px;
   justify-content: space-evenly;
 }
 /* .price-range {

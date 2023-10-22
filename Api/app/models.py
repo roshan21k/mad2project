@@ -65,7 +65,7 @@ class Review(db.Model):
     username = db.Column(db.String(50),nullable=False)
     comment = db.Column(db.String(100),nullable=False)
     rating = db.Column(db.Float,nullable=False)
-    product_id = db.Column(db.Integer,nullable = False)
+    product_id = db.Column(db.Integer,db.ForeignKey('product.id'),nullable = False)
 
 class Request(db.Model):
     id = db.Column(db.Integer,primary_key = True)

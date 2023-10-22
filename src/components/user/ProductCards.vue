@@ -14,7 +14,7 @@ export default {
   data() {
     return {};
   },
-  props: ["product", "selectedPrice", "searchName"],
+  props: ["product", "selectedPrice", "searchName", "selectedRating"],
   methods: {
     async addToCart(id) {
       try {
@@ -29,13 +29,18 @@ export default {
     filteredProduct() {
       let filteredProducts = this.product;
       if (this.selectedPrice) {
-        filteredProducts = this.product.filter(
+        filteredProducts = filteredProducts.filter(
           (x) => x.price <= this.selectedPrice
         );
       }
       if (this.searchName) {
-        filteredProducts = this.product.filter((x) =>
+        filteredProducts = filteredProducts.filter((x) =>
           x.name.toLowerCase().includes(this.searchName.toLowerCase())
+        );
+      }
+      if (this.selectedRating) {
+        filteredProducts = filteredProducts.filter(
+          (x) => x.ratings_average >= this.selectedRating
         );
       }
       return filteredProducts;

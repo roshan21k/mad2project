@@ -6,6 +6,7 @@
     @category-selected="filterCategories"
     @price-selected="filterPrice"
     @name-search="filterSearch"
+    @rating-selected="filterRating"
   />
   <div v-for="x in categories" :key="x.id">
     <h2 v-if="categoryid === 0 && !searchName">{{ x.name }}</h2>
@@ -15,12 +16,14 @@
       :product="x.products"
       :selectedPrice="price"
       :searchName="searchName"
+      :selectedRating="rating"
     />
     <product-cards
       v-else-if="x.id === categoryid"
       :product="x.products"
       :selectedPrice="price"
       :searchName="searchName"
+      :selectedRating="rating"
     />
   </div>
 </template>
@@ -44,6 +47,7 @@ export default {
       categoryid: 0,
       price: 0,
       searchName: "",
+      rating: 0,
     };
   },
   name: "HomeView",
@@ -51,6 +55,9 @@ export default {
     ...mapState(["isAuthenticated", "userRole"]),
   },
   methods: {
+    filterRating(rating) {
+      this.rating = rating;
+    },
     filterSearch(name) {
       this.searchName = name;
     },

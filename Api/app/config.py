@@ -12,3 +12,5 @@ class Config:
     MAIL_USE_SSL = os.getenv("MAIL_USE_SSL")
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+    CACHE_TYPE = 'redis'
+    CACHE_REDIS_URL= 'redis://localhost:6379/'

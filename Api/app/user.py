@@ -2,15 +2,15 @@ from flask import Blueprint,jsonify,request
 from sqlalchemy import func
 from flask_jwt_extended import jwt_required,current_user
 from .models import Category,Product,Cart,Order,OrderDetail,Review,Request,Sale
-from .extensions import db
+from .extensions import db,cache
 from .schema import CategorySchema,ProductSchema,CartSchema,OrderSchema,OrderDetailsSchema,ReviewSchema,RequestSchema,UserSchema
 from .task import *
+
 user_bp = Blueprint('user',__name__)
 
 @user_bp.get('/')
 @jwt_required()
 def user_home():
-
     categories = Category.query.all()
     category_schema = CategorySchema(many=True)
 
@@ -53,6 +53,7 @@ def product(id):
         return jsonify({'error': ' error occurred'}), 500
 
 @user_bp.get('/filter')
+@cache.cached(timeout=3600,key_prefix='filter')
 @jwt_required()
 def filter_options():
     try:
@@ -214,6 +215,7 @@ def product_comment(id):
             product_exists.ratings_count+=1
             product_exists.ratings_sum+=rating
             db.session.commit()
+            cache.delete_memoized(product_reviews,id)
             return jsonify({'message':"added successfully"}),200
         return jsonify({'error':"Review already exists"}),400
     except Exception as e:
@@ -222,6 +224,7 @@ def product_comment(id):
     
 @user_bp.get('/product/<int:id>/reviews')
 @jwt_required()
+@cache.memoize(timeout=600)
 def product_reviews(id):
     try:
         review_exists = Review.query.filter_by(product_id=id).order_by(Review.rating.desc()).all()
