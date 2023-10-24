@@ -10,7 +10,7 @@
     <h1 class="center">Your Request Has Been submitted Successfully</h1>
     <p class="center">You will be notified Soon!</p>
   </div>
-  <h1 class="my-request">My Requests</h1>
+  <h1 v-if="requests.length > 0" class="my-request">My Requests</h1>
   <div v-if="requests.length > 0" class="requests">
     <table>
       <thead>

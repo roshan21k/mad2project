@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <form @submit.prevent="handleSubmit">
-      <h1>Login</h1>
+      <span class="title">Login</span>
       <p class="red" v-if="errors">{{ errors }}</p>
       <input
         type="text"
@@ -15,6 +15,9 @@
         autocomplete="on"
       />
       <button>Login</button>
+      <router-link :to="{ name: 'signup' }" class="link"
+        >Not an user? Register Now</router-link
+      >
     </form>
   </div>
 </template>
@@ -76,7 +79,7 @@ export default {
           localStorage.setItem("userRole", response.data.role);
           this.setAuthenticated(true);
           this.setUserRole(response.data.role);
-          this.$router.push(this.redirectRoute(response.data.role));
+          this.$router.push("/");
         } catch (err) {
           console.log("username error");
           if (!err?.response?.data?.error) {
@@ -129,5 +132,17 @@ button {
   color: red;
   margin: 0%;
   padding: 0%;
+}
+.link {
+  text-decoration: none;
+  color: grey;
+  transition: all 0.3s ease;
+}
+.link:hover {
+  color: blue;
+}
+.title {
+  font-weight: light;
+  font-size: 2rem;
 }
 </style>

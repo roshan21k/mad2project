@@ -2,8 +2,11 @@
   <hamburger-menu-vue v-if="isMobile" />
   <div style="height: 75px" v-else>
     <header>
-      <router-link to="/" class="logo">
-        <h1>Grocery Store</h1>
+      <router-link class="logo-text" to="/">
+        <div class="logo-content">
+          <img class="logo" src="../assets/logo.png" />
+          <span class="logo-title">Grocery Store</span>
+        </div>
       </router-link>
       <nav>
         <ul>
@@ -22,7 +25,7 @@
             "
             :to="{ name: 'cart' }"
           >
-            <img src="../assets/cart.png" />
+            <img class="nav-img" src="../assets/cart.png" />
           </router-link>
 
           <router-link
@@ -47,7 +50,7 @@
             Logout
           </a>
           <router-link v-if="isAuthenticated" :to="{ name: 'about' }">
-            <img src="../assets/user.png" />
+            <img class="nav-img" src="../assets/user.png" />
           </router-link>
         </ul>
       </nav>
@@ -90,7 +93,7 @@ export default {
   },
   methods: {
     updateMobileStatus() {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 820) {
         this.isMobile = true;
       } else {
         this.isMobile = false;
@@ -158,17 +161,28 @@ ul {
 .link:hover {
   color: rgb(0, 0, 0);
   text-decoration: underline;
-  /* font-weight: bold; */
 }
 .logo {
+  height: 40px;
+  width: 40px;
+}
+.logo-content {
+  display: flex;
+  gap: 5px;
+}
+.logo-text {
   text-decoration: none;
   color: green;
 }
-img {
+.nav-img {
   height: 30px;
   width: 30px;
   position: relative;
   top: 20px;
   margin: 0px 10px;
+}
+.logo-title {
+  font-size: 2rem;
+  font-weight: 500;
 }
 </style>

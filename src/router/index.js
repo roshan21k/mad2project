@@ -3,7 +3,6 @@ import HomeView from "../views/user/HomeView.vue";
 import LoginView from "../views/auth/LoginView.vue";
 import SignupView from "../views/auth/SignupView.vue";
 import AdminView from "../views/admin/AdminView.vue";
-import UnauthorisedView from "../views/auth/UnauthorisedView.vue";
 import CartView from "../views/user/CartView.vue";
 import AboutmeView from "../views/user/AboutmeView.vue";
 import OrderView from "../views/user/OrderView.vue";
@@ -21,6 +20,7 @@ import UpdatecategoryView from "../views/manager/UpdatecategoryView.vue";
 import DeletecategoryView from "../views/manager/DeletecategoryView.vue";
 import ProductrequestView from "../views/admin/ProductrequestView.vue";
 import ExportView from "../views/manager/ExportView.vue";
+import NotfoundView from "../views/NotfoundView.vue";
 import store from "@/store";
 const routes = [
   {
@@ -140,12 +140,6 @@ const routes = [
     meta: { requiresAuth: true, role: ["admin"] },
   },
   {
-    path: "/unauthorised",
-    name: "unauthorised",
-    component: UnauthorisedView,
-    meta: { requiresAuth: true, role: [] },
-  },
-  {
     path: "/login",
     name: "login",
     component: LoginView,
@@ -162,6 +156,10 @@ const routes = [
     name: "signup",
     component: SignupView,
     meta: { requiresAuth: false, role: [] },
+  },
+  {
+    path: "/:catchAll(.*)",
+    component: NotfoundView,
   },
 ];
 

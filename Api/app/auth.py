@@ -57,7 +57,7 @@ def login():
             'refresh':create_refresh_token(identity=user.username)
         }}),200
             else:
-                return jsonify({'error':'Invalid credentials email'}),400
+                return jsonify({'error':'Invalid credentials'}),400
         else:
             return jsonify({"error":"User does not exists"}),409
     elif email is None and username is not None:   
@@ -69,11 +69,11 @@ def login():
             'refresh':create_refresh_token(identity=user.username)
         },"role":user.role}),200
             else:
-                return jsonify({'error':'Invalid credentials username'}),400
+                return jsonify({'error':'Invalid credentials'}),400
         else:
             return jsonify({"error":"User does not exists"}),409
     
-    return jsonify({'error':'something Invalid credentials'}),400
+    return jsonify({'error':'Invalid credentials'}),400
 
 @auth_bp.get('/refresh')
 @jwt_required(refresh=True)

@@ -1,7 +1,7 @@
 <template>
   <div class="signup">
     <form @submit.prevent="handleSubmit">
-      <h1>Sign-Up</h1>
+      <span class="title">Sign-Up</span>
       <p class="red" v-if="errors.length != 0">{{ errors }}</p>
 
       <input type="text" v-model="username" placeholder="Enter Your Username" />
@@ -22,6 +22,9 @@
         placeholder="Confirm Password"
       />
       <button>Sign-Up</button>
+      <router-link :to="{ name: 'login' }" class="link"
+        >Already an User ? Login Now</router-link
+      >
     </form>
   </div>
 </template>
@@ -131,7 +134,7 @@ form {
   display: flex;
   flex-direction: column;
   width: 400px;
-  height: 500px;
+  gap: 20px;
   padding: 20px;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
@@ -149,9 +152,9 @@ input {
   outline: None;
 }
 button {
-  padding: 10px; /* Adjust padding as needed */
-  font-size: 16px; /* Adjust font size as needed */
-  font-weight: bold; /* Adjust font weight as needed */
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
   text-align: center;
   text-decoration: none;
   background-color: lightgreen;
@@ -170,5 +173,17 @@ button {
   position: relative;
   left: -130px;
   font-size: 12px;
+}
+.link {
+  text-decoration: none;
+  color: grey;
+  transition: all 0.3s ease;
+}
+.link:hover {
+  color: blue;
+}
+.title {
+  font-weight: light;
+  font-size: 2rem;
 }
 </style>

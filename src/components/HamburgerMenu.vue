@@ -1,8 +1,8 @@
 <template>
   <div style="height: 75px">
     <header>
-      <router-link to="/" class="logo" @click="isOpen = false">
-        <h1>Grocery Store</h1>
+      <router-link to="/" @click="isOpen = false">
+        <img class="logo" src="../assets/logo.png" />
       </router-link>
       <button @click="isOpen = !isOpen" class="hamburger-button">
         <div class="bar"></div>
@@ -11,8 +11,8 @@
       </button>
     </header>
   </div>
-  <nav v-show="isOpen">
-    <ul>
+  <nav>
+    <ul :class="{ open: isOpen, close: !isOpen }">
       <router-link
         @click="isOpen = false"
         v-for="link in visibleLinks"
@@ -31,7 +31,7 @@
         :to="{ name: 'cart' }"
         class="link"
       >
-        <img src="../assets/cart.png" />
+        <img class="nav-img" src="../assets/cart.png" />
       </router-link>
       <router-link
         @click="isOpen = false"
@@ -62,7 +62,7 @@
         class="link"
         @click="isOpen = false"
       >
-        <img src="../assets/user.png" />
+        <img class="nav-img" src="../assets/user.png" />
       </router-link>
     </ul>
   </nav>
@@ -159,11 +159,10 @@ ul {
   text-decoration: underline;
 }
 .logo {
-  text-decoration: none;
-  color: green;
-  font-size: 0.7rem;
+  height: 40px;
+  width: 40px;
 }
-img {
+.nav-img {
   height: 30px;
   width: 30px;
   position: relative;
@@ -181,5 +180,14 @@ img {
   background: #000000;
   margin: 6px 0;
   transition: 0.4s;
+}
+.open {
+  transform: translateX(0%);
+  transition: transform 0.5s ease-in-out;
+}
+
+.close {
+  transform: translateX(-100%);
+  transition: transform 0.5s ease-in-out;
 }
 </style>

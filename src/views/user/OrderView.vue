@@ -1,5 +1,5 @@
 <template>
-  <h1>Your Orders</h1>
+  <h1 v-if="orders.length > 0">Your Orders</h1>
   <div v-if="orders.length > 0" class="orders">
     <div v-for="order in orders" :key="order.id" class="order">
       <div class="order-details">
@@ -54,7 +54,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(75vh - 75px);
+  min-height: calc(100vh - 75px);
 }
 .orders {
   display: flex;
