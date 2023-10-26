@@ -84,5 +84,6 @@ h1 {
 }
 button {
   height: 30px;
+  padding: 0px 10px;
 }
 </style>

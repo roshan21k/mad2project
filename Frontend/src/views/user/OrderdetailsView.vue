@@ -23,6 +23,11 @@
       </tbody>
     </table>
   </div>
+  <div class="invoice-button">
+    <button @click="getOrderInvoice(this.id)">E-mail Invoice</button>
+    <p v-if="success">{{ success }}</p>
+    <p v-if="error">{{ error }}</p>
+  </div>
 </template>
 
 <script>
@@ -32,6 +37,8 @@ export default {
   data() {
     return {
       orderDetails: [],
+      success: "",
+      error: "",
     };
   },
   methods: {
@@ -42,6 +49,23 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    async getOrderInvoice(id) {
+      try {
+        const response = await axios.get(`/mail/send_orders/${id}`);
+        this.success = "Your Invoice has been Sent via e-mail";
+        this.setMessageTimeout();
+      } catch (error) {
+        console.log(error);
+        this.error = "Error in sending invoice";
+        this.setMessageTimeout();
+      }
+    },
+    setMessageTimeout() {
+      setTimeout(() => {
+        this.success = "";
+        this.error = "";
+      }, 4000);
     },
   },
   computed: {
@@ -85,5 +109,15 @@ td {
 .invoice {
   display: flex;
   justify-content: center;
+}
+.invoice-button {
+  display: block;
+  text-align: center;
+}
+button {
+  padding: 10px;
+}
+p {
+  margin: 20px;
 }
 </style>

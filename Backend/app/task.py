@@ -58,7 +58,7 @@ def send_order_email_task(order_id,user_id,recipient):
             
             html_content = render_template("user_order.html",order_details = order_details)
             # pdf = pdfkit.from_string(html_content, False,configuration=pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf'))
-            msg = Message(subject, sender='k.roshan21k@gmail.com',recipients=[recipient])
+            msg = Message(subject,recipients=[recipient])
             msg.html = html_content
             # msg.attach('Order Details.pdf','application/pdf',pdf)
             mail.send(msg)
@@ -85,13 +85,13 @@ def send_user_monthly_report_task():
             previous_month_orders = Order.query.filter(
                 Order.user_id == user.id,
                 Order.ordered_on >= start_date,
-                Order.ordered_on <= end_date
+                # Order.ordered_on <= end_date
             ).all()
 
             if previous_month_orders:
                 subject = "Your Monthly Order Report"
                 msg = Message(
-                    subject,sender='k.roshan21k@gmail.com',
+                    subject,
                     recipients=[user.email]
                 )
 
@@ -129,7 +129,7 @@ def manager_product_report_task(email):
             csv_data = output.getvalue()
             output.close()
 
-            msg = Message('Product Export Report',sender='k.roshan21k@gmail.com',  recipients=[email])
+            msg = Message('Product Export Report',  recipients=[email])
             msg.body = product_csv_message
             
             msg.attach('products.csv', 'text/csv', csv_data)
@@ -148,7 +148,7 @@ def send_visit_email_task():
     if users:
         recipients = [user.email for user in users if not user.carts and not Order.query.filter_by(user_id=user.id).filter(Order.ordered_on > previous_day).first()]
         if recipients:
-            msg = Message(subject, sender='k.roshan21k@gmail.com', recipients=recipients)
+            msg = Message(subject, recipients=recipients)
             msg.body = user_remainder_message
             mail.send(msg)
             return "Mail sent Successfully"

@@ -138,8 +138,8 @@ export default {
   props: ["requestDetails"],
   data() {
     return {
-      perPage: 5, // Number of items to show per page
-      currentPage: 1, // Current page
+      perPage: 5,
+      currentPage: 1,
       isModalVisible: false,
       content: "",
     };

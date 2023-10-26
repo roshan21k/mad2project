@@ -8,6 +8,7 @@
     @name-search="filterSearch"
     @rating-selected="filterRating"
   />
+
   <div v-for="x in categories" :key="x.id">
     <h2 v-if="categoryid === 0 && !searchName">{{ x.name }}</h2>
     <h2 v-else-if="x.id === categoryid && !searchName">{{ x.name }}</h2>

@@ -53,7 +53,7 @@ def create_app() -> Flask:
     app.register_blueprint(admin_bp,url_prefix='/admin')
     app.register_blueprint(user_bp,url_prefix='/user')
     app.register_blueprint(manager_bp,url_prefix='/manager')
-    app.register_blueprint(mail_bp,url_prefix='/')
+    app.register_blueprint(mail_bp,url_prefix='/mail')
     
     #jwt claims for role
     @jwt.additional_claims_loader

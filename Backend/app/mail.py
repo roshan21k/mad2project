@@ -12,7 +12,7 @@ from datetime import datetime,timedelta,time
 mail_bp = Blueprint('mail_bp',__name__)
 
 
-@mail_bp.post('/send_orders/<int:id>')
+@mail_bp.get('/send_orders/<int:id>')
 @jwt_required()
 def send_order_email(id):
 
@@ -44,7 +44,7 @@ def get_report():
     response.headers["Content-Disposition"] = "attachment; filename=products.csv"
     response.headers["Content-Type"] = "text/csv"
 
-    # Set the HTTP status code (e.g., 200 for success)
+
     response.status_code = 200
 
     return response

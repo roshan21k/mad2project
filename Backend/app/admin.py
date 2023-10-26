@@ -99,7 +99,7 @@ def approve_category_add(id):
                 category_request.status = "approved"
                 db.session.commit()
                 cache.delete('filter')
-                cache.delete('category_requests')
+                # cache.delete('category_requests')
                 return jsonify({'message' : "Approved successfully"}),200
             elif category_request.action == 'delete':
                 category = Category.query.filter_by(name=category_request.name).first()
@@ -108,7 +108,7 @@ def approve_category_add(id):
                     category_request.status = "approved"
                     db.session.commit()
                     cache.delete('filter')
-                    cache.delete('category_requests')
+                    # cache.delete('category_requests')
                     return jsonify({'message' : "Approved successfully"}),200
                 return jsonify({'error':'No Category found'}),404
             else:
@@ -118,7 +118,7 @@ def approve_category_add(id):
                     category_request.status = "approved"
                     db.session.commit()
                     cache.delete('filter')
-                    cache.delete('category_requests')
+                    # cache.delete('category_requests')
                     return jsonify({'message' : "Approved successfully"}),200
                 return jsonify({'error':'No Category found'}),404
         return jsonify({'error':'No Request Found'}),404
@@ -137,7 +137,7 @@ def reject_category_add(id):
             if category_request.status == 'pending':
                 category_request.status = "rejected"
                 db.session.commit()
-                cache.delete('category_requests')
+                # cache.delete('category_requests')
                 return jsonify({'message' : "Rejected Successfully"}),200
             else:
                 return jsonify({'error':'This Request have already been reviewed'}),400
@@ -190,7 +190,7 @@ def approve_product(id):
                 db.session.add(new_product)
                 product_request.status = "approved"
                 db.session.commit()
-                cache.delete('product_requests')
+                # cache.delete('product_requests')
                 return jsonify({'message' : "Approved successfully"}),200
             elif product_request.action == 'delete':
                 product = Product.query.filter_by(id=product_request.product_id).first()
@@ -198,7 +198,7 @@ def approve_product(id):
                     db.session.delete(product)
                     product_request.status = "approved"
                     db.session.commit()
-                    cache.delete('product_requests')
+                    # cache.delete('product_requests')
                     return jsonify({'message' : "Approved successfully"}),200
                 return jsonify({'error':'No Product found'}),404
             else:
@@ -211,7 +211,7 @@ def approve_product(id):
                     product.description = product_request.new_desc
                     product_request.status = "approved"
                     db.session.commit()
-                    cache.delete('product_requests')
+                    # cache.delete('product_requests')
                     return jsonify({'message' : "Approved successfully"}),200
                 return jsonify({'error':'No Product found'}),404
         return jsonify({'error':'No Request Found'}),404
@@ -231,7 +231,7 @@ def reject_product(id):
             if product_request.status == 'pending':
                 product_request.status = "rejected"
                 db.session.commit()
-                cache.delete('product_requests')
+                # cache.delete('product_requests')
                 return jsonify({'message' : "Rejected Successfully"}),200
             else:
                 return jsonify({'error':'This Request have already been reviewed'}),400

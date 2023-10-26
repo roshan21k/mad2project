@@ -14,7 +14,7 @@ manager_bp = Blueprint('manager_bp',__name__)
 @manager_bp.get('/requests')
 @jwt_required()
 @manager_required()
-@cache.cached(timeout=600,key_prefix='category_requests')
+# @cache.cached(timeout=600,key_prefix='category_requests')
 def get_requests():
     try:
         requests = CategoryRequest.query.filter_by(user_id = current_user.id).all()
@@ -42,7 +42,7 @@ def add_category():
         new_category_request = CategoryRequest(user_id = current_user.id,action='add',name=name)
         db.session.add(new_category_request)
         db.session.commit()
-        cache.delete('category_requests')
+        # cache.delete('category_requests')
         return jsonify({'message':'Sent for approval'}),200
     except Exception as e:
        print(e)
@@ -62,7 +62,7 @@ def delete_category(id):
             new_category_request = CategoryRequest(user_id = current_user.id,action='delete',name=category_exists.name)
             db.session.add(new_category_request)
             db.session.commit()
-            cache.delete('category_requests')
+            # cache.delete('category_requests')
             return jsonify({'message':'Sent for approval'}),200
         else:
             return jsonify({'error':"This Category does not exists"}),400
@@ -89,7 +89,7 @@ def update_category(id):
             new_category_request = CategoryRequest(user_id = current_user.id,action='update',name=name,category_id = id,old_name=category_exists.name)
             db.session.add(new_category_request)
             db.session.commit()
-            cache.delete('category_requests')
+            # cache.delete('category_requests')
             return jsonify({'message':'Sent for approval'}),200
         return jsonify({'error':"This category Does not exist"}),400
     except Exception as e:
@@ -99,7 +99,7 @@ def update_category(id):
 @manager_bp.get('/product_requests')
 @jwt_required()
 @manager_required()
-@cache.cached(timeout=600,key_prefix='product_requests')
+# @cache.cached(timeout=600,key_prefix='product_requests')
 def get_product_requests():
     try:
         requests = ProductRequest.query.filter_by(user_id = current_user.id).all()
@@ -136,7 +136,7 @@ def add_product():
         new_product_request = ProductRequest(action='add',new_name=new_name,new_desc=new_desc,new_uom=new_uom,new_price=new_price,new_stock=new_stock,category_id=category_id,user_id=user_id)
         db.session.add(new_product_request)
         db.session.commit()
-        cache.delete('product_requests')
+        # cache.delete('product_requests')
         return jsonify({'message':'Sent for approval'}),200
     except Exception as e:
        print(e)
@@ -158,7 +158,7 @@ def delete_product(pid,cid):
                 new_product_request = ProductRequest(user_id = current_user.id,action='delete',product_id=pid,category_id = cid,new_name = product_exists.name,new_desc = product_exists.description,new_uom = product_exists.uom,new_stock = product_exists.stock,new_price = product_exists.price )
                 db.session.add(new_product_request)
                 db.session.commit()
-                cache.delete('product_requests')
+                # cache.delete('product_requests')
                 return jsonify({'message':'Sent for approval'}),200
             else:
                 return jsonify({'error':"This Product does not exists"}),400
@@ -196,7 +196,7 @@ def update_product():
         new_product_request = ProductRequest(action='update',new_name=new_name,new_desc=new_desc,new_uom=new_uom,new_price=new_price,new_stock=new_stock,category_id=category_id,user_id=user_id,product_id=product_id)
         db.session.add(new_product_request)
         db.session.commit()
-        cache.delete('product_requests')
+        # cache.delete('product_requests')
         return jsonify({'message':'Sent for approval'}),200
     except Exception as e:
        print(e)
